@@ -1,10 +1,7 @@
 package com.example.expense.model;
 
-import java.util.Set;
-
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -25,7 +22,4 @@ public class User {
 
 	private String email;
 
-	@OneToMany
-	private Set<Category> category;
-	
 }
