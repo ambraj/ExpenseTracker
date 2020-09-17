@@ -4,19 +4,21 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.sun.istack.NotNull;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Data
 @NoArgsConstructor
+@Data
 @Table(name = "category")
 public class Category {
 
 	@Id
 	private Long id;
 
-	// travel, grocery, ......
+	@NotNull
 	private String name;
-
+	
 }

@@ -7,12 +7,13 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
-@AllArgsConstructor
 @Data
 @Entity
 @Table(name = "expense")
@@ -28,9 +29,10 @@ public class Expense {
 	private String location;
 	
 	@ManyToOne
-	private User user;
-	
-	@ManyToOne
 	private Category category;
+
+	@JsonIgnore
+	@ManyToOne
+	private User user;
 	
 }
