@@ -4,13 +4,14 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Label, Input, Button, Container, Form, FormGroup, Table } from "reactstrap";
 import { Link } from "react-router-dom";
+import Moment from "react-moment";
 
 class Expenses extends Component {
   emptyItem = {
-    id: "103",
+    id: 104,
     expenseDate: new Date(),
-    description: "",
-    location: "",
+    description: "sdf",
+    location: "sdf",
     categories: [1, "Travel"],
   };
 
@@ -24,6 +25,9 @@ class Expenses extends Component {
       expenses: [],
       item: this.emptyItem,
     };
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.handleDateChange = this.handleDateChange.bind(this);
   }
 
   state = {
@@ -44,6 +48,36 @@ class Expenses extends Component {
     const bodyExp = await responseExp.json();
 
     this.setState({ expenses: bodyExp, isLoading: false });
+  }
+
+  async handleSubmit(event) {
+    const item = this.state.item;
+    await fetch(`/api/expenses`, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(item),
+    });
+
+    event.preventDefault();
+    this.props.history.push("/expenses");
+  }
+
+  handleChange(event) {
+    const target = event.target;
+    const value = target.value;
+    const name = target.name;
+    let item = { ...this.state.item };
+    item[name] = value;
+    this.setState({ item });
+  }
+
+  handleDateChange(date) {
+    let item = { ...this.state.item };
+    item.expenseDate = date;
+    this.setState({ item });
   }
 
   async remove(id) {
@@ -68,14 +102,20 @@ class Expenses extends Component {
       return <div>Loading .....</div>;
     }
 
-    let categoryOptions = categories.map((category) => <option id={category.id}>{category.name}</option>);
+    let categoryOptions = categories.map((category) => (
+      <option id={category.id} key={category.id}>
+        {category.name}
+      </option>
+    ));
 
     let expenseRows = expenses.map((expense) => (
-      <tr>
+      <tr key={expense.id}>
         <td>{expense.description}</td>
         <td>{expense.location}</td>
         <td>{expense.category.name}</td>
-        <td>{expense.expenseDate}</td>
+        <td>
+          <Moment date={expense.expensedate} format='YYYY/MM/DD' />
+        </td>
         <td>
           <Button size='sm' color='danger' onClick={() => this.remove(expense.id)}>
             Delete
@@ -106,7 +146,7 @@ class Expenses extends Component {
             <FormGroup>
               <Label for='expenseDate'>Date</Label>
               <br />
-              <DatePicker selected={this.state.date} onChange={this.handleChange} />
+              <DatePicker selected={this.state.item.expenseDate} onChange={this.handleDateChange} />
             </FormGroup>
 
             <div className='row'>
